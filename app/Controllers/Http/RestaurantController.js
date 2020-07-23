@@ -2,6 +2,7 @@
 const Restaurant = use("App/Models/Restaurant");
 const Database = use("Database");
 const knexPostgis = require("knex-postgis");
+const requestIp = require("request-ip");
 const st = knexPostgis(Database);
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -24,7 +25,8 @@ class RestaurantController {
     try {
       const page = request.get().page || 1;
       const limit = request.get().limit || 10;
-      console.log(request.ips());
+
+      console.log(request.ip());
       const restaurants = await Restaurant.query()
         .select(
           "id",
