@@ -37,6 +37,7 @@ class RestaurantController {
           ),
           "address"
         )
+        .orderBy("st_distance", "asc")
         .paginate(page, limit);
       for (let i = 0; i < restaurants.rows.length; i++) {
         restaurants.rows[i].distance = `${Math.round(
