@@ -24,6 +24,7 @@ class RestaurantController {
     try {
       const page = request.get().page || 1;
       const limit = request.get().limit || 10;
+      console.log(request.ip());
       const restaurants = await Restaurant.query()
         .select(
           "id",
