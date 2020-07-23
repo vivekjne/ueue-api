@@ -23,7 +23,7 @@ const st = knexPostgis(Database);
 class RestaurantSeeder {
   async run() {
     for (let i = 0; i < 5; i++) {
-      const foodcourt = new Foodcourt();
+      const restaurant = new Restaurant();
       const name = faker.company();
       restaurant.name = name;
       restaurant.slug = sanitizor.slug(name);
