@@ -93,6 +93,11 @@ class RestaurantController {
    */
   async show({ params, request, response, view }) {
     try {
+      const ip = request.ip();
+      const geo = geoip.lookup(ip);
+      console.log(geo);
+      const longitude = (geo && geo.ll[1]) || 76.536949;
+      const latitude = (geo && geo.ll[0]) || 9.01181;
       const restaurant = await Restaurant.query()
         .select(
           "id",
@@ -102,7 +107,7 @@ class RestaurantController {
           st.asGeoJSON("location"),
           st.distance(
             st.geography("location"),
-            st.geography(st.geometry("Point(76.536949 9.011810)", 4326))
+            st.geography(st.geometry(`Point(${longitude} ${latitude})`, 4326))
           ),
           "address"
         )
