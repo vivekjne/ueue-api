@@ -1,5 +1,7 @@
 "use strict";
 
+const FoodcourtController = require("../app/Controllers/Http/FoodcourtController");
+
 /*
 |--------------------------------------------------------------------------
 | Routes
@@ -24,6 +26,15 @@ Route.resource("categories", "CategoryController").middleware(
   new Map([[["store", "update", "destroy"], ["auth:jwt"]]])
 );
 
+// Foodcourt routes
+Route.resource("foodcourts", "FoodcourtController").middleware(
+  new Map([[["store", "update", "destroy"], ["auth:jwt"]]])
+);
+
+// Restaurant routes
+Route.resource("restaurants", "RestaurantController").middleware(
+  new Map([[["store", "update", "destroy"], ["auth:jwt"]]])
+);
 // Auth routes
 Route.post("auth/register", "UserController.register");
 Route.post("auth/login", "UserController.login");
