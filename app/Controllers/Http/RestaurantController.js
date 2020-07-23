@@ -2,7 +2,8 @@
 const Restaurant = use("App/Models/Restaurant");
 const Database = use("Database");
 const knexPostgis = require("knex-postgis");
-const requestIp = require("request-ip");
+var geoip = require("geoip-lite");
+
 const st = knexPostgis(Database);
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -26,7 +27,12 @@ class RestaurantController {
       const page = request.get().page || 1;
       const limit = request.get().limit || 10;
 
-      console.log(request.ip());
+      const ip = request.ip();
+      const geo = geoip.lookup(ip);
+      console.log(geo);
+      const longitude = (geo && geo.ll[1]) || 76.536949;
+      const latitude = (geo && geo.ll[0]) || 9.01181;
+
       const restaurants = await Restaurant.query()
         .select(
           "id",
@@ -36,7 +42,7 @@ class RestaurantController {
           st.asGeoJSON("location"),
           st.distance(
             st.geography("location"),
-            st.geography(st.geometry("Point(76.536949 9.011810)", 4326))
+            st.geography(st.geometry(`Point(${longitude} ${latitude})`, 4326))
           ),
           "address"
         )
