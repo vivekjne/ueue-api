@@ -17,7 +17,7 @@ const Restaurant = use("App/Models/Restaurant");
 
 class MenuSeeder {
   async run() {
-    const restaurant_ids = Restaurant.all();
+    const restaurant_ids = await Restaurant.all();
 
     const menus = [
       {
