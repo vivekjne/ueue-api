@@ -118,37 +118,48 @@ class RestaurantController {
         )
         .where("id", params.id)
         .first();
+      if (restaurant) {
+        restaurant.distance = `${Math.round(
+          restaurant.st_distance / 1000
+        )} kms`;
+        restaurant.location = JSON.parse(restaurant.location);
 
-      restaurant.distance = `${Math.round(restaurant.st_distance / 1000)} kms`;
-      restaurant.location = JSON.parse(restaurant.location);
+        const menus = await Menu.query()
+          .where("restaurant_id", params.id)
+          .distinct("menu_category_id")
 
-      const menus = await Menu.query()
-        .where("restaurant_id", params.id)
-        .distinct("menu_category_id")
-
-        .fetch();
-      console.log(menus.rows[0]);
-      restaurant.menu_categories = [];
-      try {
-        for (let k = 0; k < menus.rows.length; k++) {
-          restaurant.menu_categories[k] = await MenuCategory.find(
-            menus.rows[k].menu_category_id
-          );
+          .fetch();
+        console.log(menus.rows[0]);
+        restaurant.menu_categories = [];
+        try {
+          for (let k = 0; k < menus.rows.length; k++) {
+            restaurant.menu_categories[k] = await MenuCategory.find(
+              menus.rows[k].menu_category_id
+            );
+            restaurant.menu_categories[k].items = await Menu.query()
+              .where({
+                restaurant_id: params.id,
+                menu_category_id: menus.rows[k].menu_category_id,
+              })
+              .fetch();
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } catch (err) {
-        console.log(err);
+        // restaurant.menu = await restaurant.menus().fetch();
+        // // console.log(restaurant.menu);
+        // for (let i = 0; i < restaurant.menu.rows.length; i++) {
+        //   restaurant.menu.rows[i].menu_category = await restaurant.menu.rows[i]
+        //     .category()
+        //     .fetch();
+        //   restaurant.menu.rows[i].menu_type = await restaurant.menu.rows[i]
+        //     .type()
+        //     .fetch();
+        // }
+        return response.json({ data: restaurant.toJSON(), status: "success" });
+      } else {
+        return response.status(404).json({ error: "Restaurant not found!" });
       }
-      restaurant.menu = await restaurant.menus().fetch();
-      // console.log(restaurant.menu);
-      for (let i = 0; i < restaurant.menu.rows.length; i++) {
-        restaurant.menu.rows[i].menu_category = await restaurant.menu.rows[i]
-          .category()
-          .fetch();
-        restaurant.menu.rows[i].menu_type = await restaurant.menu.rows[i]
-          .type()
-          .fetch();
-      }
-      return response.json({ data: restaurant.toJSON(), status: "success" });
     } catch (error) {
       console.log(error);
       if (error.name === "ModelNotFoundException")
