@@ -2,6 +2,7 @@
 const Restaurant = use("App/Models/Restaurant");
 const Menu = use("App/Models/Menu");
 const MenuCategory = use("App/Models/MenuCategory");
+const MenuType = use("App/Models/MenuType");
 
 const Database = use("Database");
 const knexPostgis = require("knex-postgis");
@@ -129,7 +130,7 @@ class RestaurantController {
           .distinct("menu_category_id")
 
           .fetch();
-        console.log(menus.rows[0]);
+        // console.log(menus.rows[0]);
         restaurant.menu_categories = [];
         try {
           for (let k = 0; k < menus.rows.length; k++) {
@@ -141,7 +142,13 @@ class RestaurantController {
                 restaurant_id: params.id,
                 menu_category_id: menus.rows[k].menu_category_id,
               })
+
               .fetch();
+
+            for (let menu of restaurant.menu_categories[k].items.rows) {
+              console.log(menu);
+              menu.type = await MenuType.find(menu.menu_type_id);
+            }
           }
         } catch (err) {
           console.log(err);

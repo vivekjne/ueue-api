@@ -8,7 +8,7 @@ class Menu extends Model {
     return this.belongsTo("App/Models/MenuCategory");
   }
 
-  type() {
+  menuTypes() {
     return this.belongsTo("App/Models/MenuType");
   }
 }

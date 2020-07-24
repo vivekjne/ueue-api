@@ -13,10 +13,11 @@
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use("Factory");
 const Menu = use("App/Models/Menu");
+const Restaurant = use("App/Models/Restaurant");
 
 class MenuSeeder {
   async run() {
-    const restaurant_ids = [1, 2, 3, 4, 5];
+    const restaurant_ids = Restaurant.all();
 
     const menus = [
       {
@@ -35,8 +36,7 @@ class MenuSeeder {
       },
 
       {
-        name:
-          "Sharjah Shake is one of the common Shakes that we get bakers across kerala.",
+        name: "Sharjah Shake",
         description:
           "Sharjah Shake is one of the common Shakes that we get bakers across kerala.",
         menu_category_id: 3,
@@ -52,7 +52,7 @@ class MenuSeeder {
         }),
       },
     ];
-    for (let k = 0; k < restaurant_ids.length; k++) {
+    for (let k = 0; k < restaurant_ids.rows.length; k++) {
       for (let i = 0; i < menus.length; i++) {
         const menu = new Menu();
         menu.name = menus[i].name;
@@ -61,7 +61,7 @@ class MenuSeeder {
         menu.menu_type_id = menus[i].menu_type_id;
         menu.image = menus[i].image;
         menu.ingredients = menus[i].ingredients;
-        menu.restaurant_id = restaurant_ids[k];
+        menu.restaurant_id = restaurant_ids[k].id;
 
         await menu.save();
       }
