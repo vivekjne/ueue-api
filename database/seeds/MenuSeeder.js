@@ -61,7 +61,7 @@ class MenuSeeder {
         menu.menu_type_id = menus[i].menu_type_id;
         menu.image = menus[i].image;
         menu.ingredients = menus[i].ingredients;
-        menu.restaurant_id = restaurant_ids[k].id;
+        menu.restaurant_id = restaurant_ids.rows[k].id;
 
         await menu.save();
       }
