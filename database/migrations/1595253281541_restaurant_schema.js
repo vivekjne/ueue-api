@@ -15,7 +15,7 @@ class RestaurantSchema extends Schema {
       table
         .string("image")
         .nullable()
-        .defaultTo("https://via.placeholder.com/500");
+        .defaultTo("http://lorempixel.com/500/500/food/");
       table
         .bigInteger("foodcourt_id")
         .unsigned()
