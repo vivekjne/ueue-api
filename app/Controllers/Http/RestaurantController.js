@@ -118,7 +118,16 @@ class RestaurantController {
 
       restaurant.distance = `${Math.round(restaurant.st_distance / 1000)} kms`;
       restaurant.location = JSON.parse(restaurant.location);
-
+      restaurant.menu = await restaurant.menus().fetch();
+      // console.log(restaurant.menu);
+      for (let i = 0; i < restaurant.menu.rows.length; i++) {
+        restaurant.menu.rows[i].menu_category = await restaurant.menu.rows[i]
+          .category()
+          .fetch();
+        restaurant.menu.rows[i].menu_type = await restaurant.menu.rows[i]
+          .type()
+          .fetch();
+      }
       return response.json({ data: restaurant.toJSON(), status: "success" });
     } catch (error) {
       console.log(error);
