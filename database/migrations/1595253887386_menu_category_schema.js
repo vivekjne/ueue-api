@@ -8,7 +8,8 @@ class MenuCategorySchema extends Schema {
     this.create("menu_categories", (table) => {
       table.increments();
       table.string("name").notNullable();
-      table.boolean("is_active").defaultTo(false);
+      table.boolean("is_featured").defaultTo(false);
+      table.boolean("is_active").defaultTo(true);
       table.timestamps();
     });
   }

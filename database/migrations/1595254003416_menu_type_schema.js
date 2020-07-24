@@ -8,7 +8,8 @@ class MenuTypeSchema extends Schema {
     this.create("menu_types", (table) => {
       table.increments();
       table.string("name").notNullable();
-      table.boolean("isActive").defaultTo(true);
+      table.string("icon").nullable();
+      table.boolean("is_active").defaultTo(true);
       table.timestamps();
     });
   }

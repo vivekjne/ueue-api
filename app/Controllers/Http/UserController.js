@@ -93,8 +93,9 @@ class UserController {
     try {
       const rules = {
         name: "required|accepted",
-        username: "accepted",
+
         password: "accepted|min:6|max:30",
+        email: "accepted|email",
         provider: "required|in:email,google,facebook",
         providerKey: "accepted",
         userId: "accepted",

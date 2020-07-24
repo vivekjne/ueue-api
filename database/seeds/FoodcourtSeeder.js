@@ -37,7 +37,7 @@ class FoodcourtSeeder {
       await foodcourt.save();
     }
     const foodcourts = await Database.table("foodcourts");
-    console.log(foodcourts);
+    // console.log(foodcourts);
   }
 }
 
