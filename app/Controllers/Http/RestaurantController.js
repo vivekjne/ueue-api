@@ -39,6 +39,7 @@ class RestaurantController {
           "name",
           "slug",
           "description",
+          "image",
           st.asGeoJSON("location"),
           st.distance(
             st.geography("location"),
@@ -104,6 +105,7 @@ class RestaurantController {
           "name",
           "slug",
           "description",
+          "image",
           st.asGeoJSON("location"),
           st.distance(
             st.geography("location"),
