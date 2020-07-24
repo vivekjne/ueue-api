@@ -18,7 +18,8 @@ class UserController {
   async register({ auth, request, response }) {
     try {
       const rules = {
-        username: "required|unique:users,username",
+        name: "required",
+
         email: "required|email|unique:users,email",
         password: "required|min:6|max:30",
       };
@@ -28,30 +29,31 @@ class UserController {
         return validation.messages();
       }
 
-      const userData = request.only(["username", "email", "password"]);
-      userData.location = st.geomFromGeoJSON({
-        type: "Point",
-        coordinates: [-48.23456, 20.12345],
-      });
+      const userData = request.only(["name", "email", "password"]);
+      // userData.location = st.geomFromGeoJSON({
+      //   type: "Point",
+      //   coordinates: [-48.23456, 20.12345],
+      // });
+      userData.provider = "email";
       const user = await User.create(userData);
       const token = await auth.generate(user);
       //   const location = await st.asText(user.location);
-      const sql2 = await Database.select(
-        "id",
-        "username",
-        "email",
-        st.asGeoJSON("location")
-      )
-        .from("users")
-        .where("id", user.id)
-        .first();
+      // const sql2 = await Database.select(
+      //   "id",
+      //   "username",
+      //   "email",
+      //   st.asGeoJSON("location")
+      // )
+      //   .from("users")
+      //   .where("id", user.id)
+      //   .first();
 
-      sql2.location = JSON.parse(sql2.location);
+      // sql2.location = JSON.parse(sql2.location);
 
-      console.log(sql2);
+      // console.log(sql2);
 
       //   console.log({ user: st.asText(userOld.location) });
-      return response.json({ token, user: sql2 });
+      return response.json({ ...token, status: "success" });
     } catch (error) {
       return response.status(500).json({ error: error.message });
     }
@@ -80,8 +82,8 @@ class UserController {
 
       const { email, password } = request.all();
       const user = await auth.attempt(email, password);
-      console.log(user);
-      return user;
+      // console.log(user);
+      return response.json({ ...user, status: "success" });
     } catch (error) {
       return response.status(500).json({ error: error.message });
     }
