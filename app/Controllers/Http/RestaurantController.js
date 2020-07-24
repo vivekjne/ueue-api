@@ -1,5 +1,8 @@
 "use strict";
 const Restaurant = use("App/Models/Restaurant");
+const Menu = use("App/Models/Menu");
+const MenuCategory = use("App/Models/MenuCategory");
+
 const Database = use("Database");
 const knexPostgis = require("knex-postgis");
 var geoip = require("geoip-lite");
@@ -118,6 +121,23 @@ class RestaurantController {
 
       restaurant.distance = `${Math.round(restaurant.st_distance / 1000)} kms`;
       restaurant.location = JSON.parse(restaurant.location);
+
+      const menus = await Menu.query()
+        .where("restaurant_id", params.id)
+        .distinct("menu_category_id")
+
+        .fetch();
+      console.log(menus.rows[0]);
+      restaurant.menu_categories = [];
+      try {
+        for (let k = 0; k < menus.rows.length; k++) {
+          restaurant.menu_categories[k] = await MenuCategory.find(
+            menus.rows[k].menu_category_id
+          );
+        }
+      } catch (err) {
+        console.log(err);
+      }
       restaurant.menu = await restaurant.menus().fetch();
       // console.log(restaurant.menu);
       for (let i = 0; i < restaurant.menu.rows.length; i++) {
