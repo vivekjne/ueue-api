@@ -8,6 +8,7 @@ const Database = use("Database");
 const knexPostgis = require("knex-postgis");
 var geoip = require("geoip-lite");
 
+const Redis = use("Redis");
 const st = knexPostgis(Database);
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -98,6 +99,18 @@ class RestaurantController {
    */
   async show({ params, request, response, view }) {
     try {
+      const restaurantFromRedis = await Redis.hmget(
+        "restaurants",
+        `${params.id}-${request.ip()}`,
+        request.ip()
+      );
+      if (restaurantFromRedis && restaurantFromRedis[0]) {
+        // console.log(restaurantFromRedis);
+        return response.json({
+          data: JSON.parse(restaurantFromRedis[0]),
+          status: "success",
+        });
+      }
       const ip = request.ip();
       const geo = geoip.lookup(ip);
       console.log(geo);
@@ -163,6 +176,14 @@ class RestaurantController {
         //     .type()
         //     .fetch();
         // }
+
+        await Redis.hmset(
+          "restaurants",
+          `${params.id}-${request.ip()}`,
+
+          JSON.stringify(restaurant.toJSON())
+        );
+        await Redis.expire("restaurants", 6000);
         return response.json({ data: restaurant.toJSON(), status: "success" });
       } else {
         return response.status(404).json({ error: "Restaurant not found!" });
