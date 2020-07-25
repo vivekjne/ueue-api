@@ -37,6 +37,8 @@ Route.resource("restaurants", "RestaurantController").middleware(
 );
 
 // Cart routes
+Route.get("carts/clear", "CartController.clear").middleware(["auth:jwt"]);
+
 Route.resource("carts", "CartController").middleware(["auth:jwt"]);
 // Auth routes
 Route.post("auth/register", "UserController.register");

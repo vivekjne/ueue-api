@@ -210,6 +210,18 @@ class CartController {
       return response.json({ error });
     }
   }
+
+  async clear({ auth, request, response }) {
+    try {
+      const user = await auth.getUser();
+      const cart = await Cart.query().where("user_id", user.id).delete();
+
+      return response.json({ data: [], status: "success" });
+    } catch (error) {
+      console.log(error);
+      return response.json({ error });
+    }
+  }
 }
 
 module.exports = CartController;
