@@ -35,6 +35,9 @@ Route.resource("foodcourts", "FoodcourtController").middleware(
 Route.resource("restaurants", "RestaurantController").middleware(
   new Map([[["store", "update", "destroy"], ["auth:jwt"]]])
 );
+
+// Cart routes
+Route.resource("carts", "CartController").middleware(["auth:jwt"]);
 // Auth routes
 Route.post("auth/register", "UserController.register");
 Route.post("auth/login", "UserController.login");

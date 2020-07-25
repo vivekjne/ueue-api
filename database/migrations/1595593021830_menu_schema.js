@@ -10,20 +10,20 @@ class MenuSchema extends Schema {
       table.string("name", 254).notNullable();
       table.text("description").nullable();
       table
-        .bigInteger("restaurant_id")
+        .integer("restaurant_id")
         .unsigned()
         .references("id")
         .inTable("restaurants")
         .notNullable();
       table
-        .bigInteger("menu_category_id")
+        .integer("menu_category_id")
         .unsigned()
         .references("id")
         .inTable("menu_categories")
         .notNullable();
 
       table
-        .bigInteger("menu_type_id")
+        .integer("menu_type_id")
         .unsigned()
         .references("id")
         .inTable("menu_types")
