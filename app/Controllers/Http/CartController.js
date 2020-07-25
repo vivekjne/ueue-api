@@ -82,7 +82,7 @@ class CartController {
 
       const validation = await validate(request.all(), rules);
       if (validation.fails()) {
-        return validation.messages();
+        return response.status(422).json(validation.messages());
       }
 
       const body = request.body;
@@ -179,7 +179,7 @@ class CartController {
 
       const validation = await validate(request.all(), rules);
       if (validation.fails()) {
-        return validation.messages();
+        return response.status(422).json(validation.messages());
       }
 
       const body = request.body;

@@ -26,7 +26,7 @@ class UserController {
 
       const validation = await validate(request.all(), rules);
       if (validation.fails()) {
-        return validation.messages();
+        return response.status(422).json(validation.messages());
       }
 
       const userData = request.only(["name", "email", "password"]);
@@ -77,7 +77,7 @@ class UserController {
 
       const validation = await validate(request.all(), rules);
       if (validation.fails()) {
-        return validation.messages();
+        return response.status(422).json(validation.messages());
       }
 
       const { email, password } = request.all();
@@ -85,7 +85,13 @@ class UserController {
       // console.log(user);
       return response.json({ ...user, status: "success" });
     } catch (error) {
-      return response.status(500).json({ error: error.message });
+      console.log(error);
+      if (error.name === "UserNotFoundException") {
+        return response
+          .status(404)
+          .json({ error: { message: error.message, name: error.name } });
+      }
+      return response.status(500).json({ error: error });
     }
   }
 
@@ -104,7 +110,7 @@ class UserController {
 
       const validation = await validate(request.all(), rules);
       if (validation.fails()) {
-        return validation.messages();
+        return response.status(422).json(validation.messages());
       }
 
       const userData = request.body;
