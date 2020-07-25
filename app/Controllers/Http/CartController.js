@@ -106,23 +106,29 @@ class CartController {
 
       const itemExists = await Cart.query()
         .where({ user_id: user.id, menu_id: body.menu_id })
+        .with("menu", (builder) => {
+          builder.with("menuTypes").with("category");
+        })
         .whereRaw("price->>'title'=? ", [body.price.title])
 
         .first();
-      console.log(itemExists.qty);
 
       if (itemExists) {
-        itemExists.qty = Number(itemExists.qty) + body.qty;
+        itemExists.qty = body.qty;
         itemExists.item_total = Number(itemExists.price.price) * itemExists.qty;
         await itemExists.save();
+
         return response.json({ data: itemExists.toJSON() });
       }
 
       body.item_total = body.price.price * body.qty;
       body.user_id = user.id;
       const cart = await Cart.create(body);
+      await cart.load("menu", (builder) => {
+        builder.with("menuTypes").with("category");
+      });
 
-      return response.json({ data: cart.toJSON() });
+      return response.json({ data: cart.toJSON(), status: "success" });
     } catch (error) {
       console.log(error);
       return response.json({ error });
@@ -159,7 +165,32 @@ class CartController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {}
+  async update({ params, request, response }) {
+    try {
+      const cart = await Cart.query()
+        .where("id", params.id)
+        .with("menu", (builder) => {
+          builder.with("menuTypes").with("category");
+        })
+        .first();
+      const rules = {
+        qty: "required|number",
+      };
+
+      const validation = await validate(request.all(), rules);
+      if (validation.fails()) {
+        return validation.messages();
+      }
+
+      const body = request.body;
+      cart.qty = body.qty;
+      cart.item_total = Number(cart.price.price) * cart.qty;
+      await cart.save();
+      return response.json({ data: cart.toJSON(), status: "success" });
+    } catch (error) {
+      return response.json({ error });
+    }
+  }
 
   /**
    * Delete a cart with id.
@@ -169,7 +200,16 @@ class CartController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy({ params, request, response }) {
+    try {
+      const cart = await Cart.findOrFail(params.id);
+      cart.delete();
+      return response.json({ data: cart.toJSON(), status: "success" });
+    } catch (error) {
+      console.log(error);
+      return response.json({ error });
+    }
+  }
 }
 
 module.exports = CartController;
