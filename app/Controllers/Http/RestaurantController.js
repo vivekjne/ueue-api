@@ -123,6 +123,8 @@ class RestaurantController {
           "slug",
           "description",
           "image",
+          "currency",
+          "currency_code",
           st.asGeoJSON("location"),
           st.distance(
             st.geography("location"),
