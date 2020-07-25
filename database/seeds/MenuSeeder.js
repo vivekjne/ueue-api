@@ -33,6 +33,16 @@ class MenuSeeder {
           Salt: "1 1/2 tbsp",
           cornflour: "4 tbsp",
         }),
+        price_variants: JSON.stringify([
+          {
+            title: "Half",
+            price: 180.0,
+          },
+          {
+            title: "Full",
+            price: 230.0,
+          },
+        ]),
       },
 
       {
@@ -50,6 +60,16 @@ class MenuSeeder {
           sugar: "3 tbsp",
           "Vanilla Ice Cream": "1 scoop",
         }),
+        price_variants: JSON.stringify([
+          {
+            title: "Normal",
+            price: 80.0,
+          },
+          {
+            title: "Special",
+            price: 150.0,
+          },
+        ]),
       },
     ];
     for (let k = 0; k < restaurant_ids.rows.length; k++) {
@@ -62,6 +82,7 @@ class MenuSeeder {
         menu.image = menus[i].image;
         menu.ingredients = menus[i].ingredients;
         menu.restaurant_id = restaurant_ids.rows[k].id;
+        menu.price_variants = menus[i].price_variants;
 
         await menu.save();
       }
