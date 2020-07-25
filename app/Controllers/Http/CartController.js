@@ -98,7 +98,7 @@ class CartController {
         .select("restaurant_id")
         .where("user_id", user.id)
         .first();
-      if (oldCart.restaurant_id !== body.restaurant_id) {
+      if (oldCart && oldCart.restaurant_id !== body.restaurant_id) {
         return response.json({
           error: "You cannot add from another restaurant without removing cart",
         });
