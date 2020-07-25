@@ -99,18 +99,18 @@ class RestaurantController {
    */
   async show({ params, request, response, view }) {
     try {
-      const restaurantFromRedis = await Redis.hmget(
-        "restaurants",
-        `${params.id}-${request.ip()}`,
-        request.ip()
-      );
-      if (restaurantFromRedis && restaurantFromRedis[0]) {
-        // console.log(restaurantFromRedis);
-        return response.json({
-          data: JSON.parse(restaurantFromRedis[0]),
-          status: "success",
-        });
-      }
+      // const restaurantFromRedis = await Redis.hmget(
+      //   "restaurants",
+      //   `${params.id}-${request.ip()}`,
+      //   request.ip()
+      // );
+      // if (restaurantFromRedis && restaurantFromRedis[0]) {
+      //   // console.log(restaurantFromRedis);
+      //   return response.json({
+      //     data: JSON.parse(restaurantFromRedis[0]),
+      //     status: "success",
+      //   });
+      // }
       const ip = request.ip();
       const geo = geoip.lookup(ip);
       console.log(geo);
@@ -179,13 +179,13 @@ class RestaurantController {
         //     .fetch();
         // }
 
-        await Redis.hmset(
-          "restaurants",
-          `${params.id}-${request.ip()}`,
+        // await Redis.hmset(
+        //   "restaurants",
+        //   `${params.id}-${request.ip()}`,
 
-          JSON.stringify(restaurant.toJSON())
-        );
-        await Redis.expire("restaurants", 6000);
+        //   JSON.stringify(restaurant.toJSON())
+        // );
+        // await Redis.expire("restaurants", 60);
         return response.json({ data: restaurant.toJSON(), status: "success" });
       } else {
         return response.status(404).json({ error: "Restaurant not found!" });
